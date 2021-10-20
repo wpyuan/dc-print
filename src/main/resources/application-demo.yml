@@ -1,0 +1,9 @@
+dc:
+  print:
+    # 模板目录
+    templateClassPath: print/template
+    # 字体路径。默认字体：宋体，微软雅黑
+    fontClassPath:
+      - fonts/simsun.ttc
+      - fonts/simsunb.ttf
+      - fonts/msyh.ttc
