@@ -5,10 +5,19 @@ import com.github.dc.print.handler.PrintHandlerManager;
 import com.github.dc.print.helper.PdfHelper;
 import com.github.dc.print.service.IPrintService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * <p>
@@ -20,6 +29,7 @@ import java.util.Map;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PrintServiceImpl<T> implements IPrintService<T> {
 
     private final PrintHandlerManager printHandlerManager;
@@ -42,5 +52,37 @@ public class PrintServiceImpl<T> implements IPrintService<T> {
     @Override
     public void print(Map<String, Object> data, String htmlTmpName, OutputStream os) {
         pdfHelper.exportPdf(data, htmlTmpName, os);
+    }
+
+    @Override
+    public void batchPrint(String code, List<T> businessKey, OutputStream os) {
+        IPrint printHandler = printHandlerManager.get(code);
+        if (printHandler == null) {
+            throw new NullPointerException("无对应打印处理器");
+        }
+        try (CheckedOutputStream cos = new CheckedOutputStream(os, new CRC32()); ZipOutputStream zos = new ZipOutputStream(cos);){
+            zos.setLevel(9);
+            for (T key : businessKey) {
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()){
+                    Map<String, Object> data = printHandler.data(key);
+                    this.print(data, printHandler.template(), baos);
+
+                    // 写入zip
+                    String customFileName = printHandler.customFileNameWhenBatchCompress(key, data, String.valueOf(key));
+                    ZipEntry zipEntry = new ZipEntry(customFileName + ".pdf");
+                    zos.putNextEntry(zipEntry);
+                    IOUtils.write(baos.toByteArray(), zos);
+                    zos.closeEntry();
+                } catch (Exception e) {
+                    printHandler.handleException(code, key, os, e);
+                }
+
+            }
+
+            zos.finish();
+        } catch (IOException e) {
+            printHandler.handleException(code, businessKey, os, e);
+        }
+
     }
 }

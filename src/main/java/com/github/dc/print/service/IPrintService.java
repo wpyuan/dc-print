@@ -1,6 +1,7 @@
 package com.github.dc.print.service;
 
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,4 +29,12 @@ public interface IPrintService<T> {
      * @param os 输出流
      */
     void print(Map<String, Object> data, String htmlTmpName, OutputStream os);
+
+    /**
+     * 批量打印
+     * @param code 客制化打印处理器标识
+     * @param businessKey 业务主键
+     * @param os 输出流
+     */
+    void batchPrint(String code, List<T> businessKey, OutputStream os);
 }

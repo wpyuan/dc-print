@@ -21,6 +21,18 @@ public interface IPrint<T> {
     String template();
 
     /**
+     * 批量压缩时定义文件名(不带格式)，不设置则返回默认文件名
+     *
+     * @param businessKey 当前压缩文件的业务主键
+     * @param data 打印的业务数据
+     * @param defaultFileName 默认文件名
+     * @return 定义压缩包里的文件名
+     */
+    default String customFileNameWhenBatchCompress(T businessKey, Map<String, Object> data, String defaultFileName) {
+        return defaultFileName;
+    }
+
+    /**
      * 返回打印数据
      *
      * @param businessKey 业务主键

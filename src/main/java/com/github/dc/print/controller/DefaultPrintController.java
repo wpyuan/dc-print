@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * <p>
@@ -43,5 +44,13 @@ public class DefaultPrintController {
         response.setHeader("Content-Disposition", "attachment; filename=\""
                 + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".pdf" + "\"");
         service.print(code, businessKey, response.getOutputStream());
+    }
+
+    @GetMapping("/batch-down/{code}")
+    public void batchDown(@PathVariable String code, @RequestParam("businessKey") List<Object> businessKey, @RequestParam("title") String title, HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\""
+                + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".zip" + "\"");
+        service.batchPrint(code, businessKey, response.getOutputStream());
     }
 }
