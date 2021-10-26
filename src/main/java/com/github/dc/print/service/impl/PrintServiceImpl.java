@@ -36,26 +36,26 @@ public class PrintServiceImpl<T> implements IPrintService<T> {
     private final PdfHelper pdfHelper;
 
     @Override
-    public void print(String code, T businessKey, OutputStream os) {
+    public void print(String code, T businessKey, OutputStream os, Boolean enableWatermark, String watermarkContent) {
         IPrint printHandler = printHandlerManager.get(code);
         if (printHandler == null) {
             throw new NullPointerException("无对应打印处理器");
         }
         Map<String, Object> data = printHandler.data(businessKey);
         try {
-            this.print(data, printHandler.template(), os);
+            this.print(data, printHandler.template(), os, enableWatermark, watermarkContent);
         } catch (Exception e) {
             printHandler.handleException(code, businessKey, os, e);
         }
     }
 
     @Override
-    public void print(Map<String, Object> data, String htmlTmpName, OutputStream os) {
-        pdfHelper.exportPdf(data, htmlTmpName, os);
+    public void print(Map<String, Object> data, String htmlTmpName, OutputStream os, Boolean enableWatermark, String watermarkContent) {
+        pdfHelper.exportPdf(data, htmlTmpName, os, enableWatermark, watermarkContent);
     }
 
     @Override
-    public void batchPrint(String code, List<T> businessKey, OutputStream os) {
+    public void batchPrint(String code, List<T> businessKey, OutputStream os, Boolean enableWatermark, String watermarkContent) {
         IPrint printHandler = printHandlerManager.get(code);
         if (printHandler == null) {
             throw new NullPointerException("无对应打印处理器");
@@ -65,7 +65,7 @@ public class PrintServiceImpl<T> implements IPrintService<T> {
             for (T key : businessKey) {
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream()){
                     Map<String, Object> data = printHandler.data(key);
-                    this.print(data, printHandler.template(), baos);
+                    this.print(data, printHandler.template(), baos, enableWatermark, watermarkContent);
 
                     // 写入zip
                     String customFileName = printHandler.customFileNameWhenBatchCompress(key, data, String.valueOf(key));

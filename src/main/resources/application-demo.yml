@@ -1,9 +1,18 @@
+# 以下是默认配置，如无更改，不需配置
 dc:
   print:
-    # 模板目录
+    # 模板目录。默认print/template
     templateClassPath: print/template
-    # 字体路径。默认字体：宋体，微软雅黑
+    # 模板的字符集。默认UTF-8
+    encoding: UTF-8
+    # 模板可用字体路径。默认字体：宋体，微软雅黑，如以下字体。添加额外字体后，需要在模板对应使用
     fontClassPath:
       - fonts/simsun.ttc
       - fonts/simsunb.ttf
       - fonts/msyh.ttc
+    # 水印
+    watermark:
+      # 水印字号，默认18号
+      fontSize: 18
+      # 不透明度 0~1，越靠近0越透明，默认0.125
+      opacity: 0.125

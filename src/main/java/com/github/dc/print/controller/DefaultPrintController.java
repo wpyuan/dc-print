@@ -31,26 +31,32 @@ public class DefaultPrintController {
     private IPrintService service;
 
     @GetMapping("/inline/{code}")
-    public void inline(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title, HttpServletResponse response) throws IOException {
+    public void inline(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
+                       @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
+                       @RequestParam(value = "watermarkContent", required = false) String watermarkContent, HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline; filename=\""
                 + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".pdf" + "\"");
-        service.print(code, businessKey, response.getOutputStream());
+        service.print(code, businessKey, response.getOutputStream(), enableWatermark, watermarkContent);
     }
 
     @GetMapping("/down/{code}")
-    public void down(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title, HttpServletResponse response) throws IOException {
+    public void down(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
+                     @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
+                     @RequestParam(value = "watermarkContent", required = false) String watermarkContent, HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=\""
                 + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".pdf" + "\"");
-        service.print(code, businessKey, response.getOutputStream());
+        service.print(code, businessKey, response.getOutputStream(), enableWatermark, watermarkContent);
     }
 
     @GetMapping("/batch-down/{code}")
-    public void batchDown(@PathVariable String code, @RequestParam("businessKey") List<Object> businessKey, @RequestParam("title") String title, HttpServletResponse response) throws IOException {
+    public void batchDown(@PathVariable String code, @RequestParam("businessKey") List<Object> businessKey, @RequestParam("title") String title,
+                          @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
+                          @RequestParam(value = "watermarkContent", required = false) String watermarkContent, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=\""
                 + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".zip" + "\"");
-        service.batchPrint(code, businessKey, response.getOutputStream());
+        service.batchPrint(code, businessKey, response.getOutputStream(), enableWatermark, watermarkContent);
     }
 }

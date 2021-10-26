@@ -19,22 +19,28 @@ public interface IPrintService<T> {
      * @param code 客制化打印处理器标识
      * @param businessKey 业务主键
      * @param os 输出流
+     * @param enableWatermark 是否启用水印
+     * @param watermarkContent 水印内容
      */
-    void print(String code, T businessKey, OutputStream os);
+    void print(String code, T businessKey, OutputStream os, Boolean enableWatermark, String watermarkContent);
 
     /**
      * 打印
      * @param data 打印数据
      * @param htmlTmpName 模板目录下的模板文件名
      * @param os 输出流
+     * @param enableWatermark 是否启用水印
+     * @param watermarkContent 水印内容
      */
-    void print(Map<String, Object> data, String htmlTmpName, OutputStream os);
+    void print(Map<String, Object> data, String htmlTmpName, OutputStream os, Boolean enableWatermark, String watermarkContent);
 
     /**
      * 批量打印
      * @param code 客制化打印处理器标识
      * @param businessKey 业务主键
      * @param os 输出流
+     * @param enableWatermark 是否启用水印
+     * @param watermarkContent 水印内容
      */
-    void batchPrint(String code, List<T> businessKey, OutputStream os);
+    void batchPrint(String code, List<T> businessKey, OutputStream os, Boolean enableWatermark, String watermarkContent);
 }
