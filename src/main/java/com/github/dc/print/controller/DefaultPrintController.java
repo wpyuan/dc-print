@@ -2,16 +2,21 @@ package com.github.dc.print.controller;
 
 import com.github.dc.print.service.IPrintService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayOutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -31,32 +36,47 @@ public class DefaultPrintController {
     private IPrintService service;
 
     @GetMapping("/inline/{code}")
-    public void inline(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
-                       @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
-                       @RequestParam(value = "watermarkContent", required = false) String watermarkContent, HttpServletResponse response) throws IOException {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=\""
-                + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".pdf" + "\"");
-        service.print(code, businessKey, response.getOutputStream(), enableWatermark, watermarkContent);
+    public ResponseEntity<?> inline(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
+                                    @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
+                                    @RequestParam(value = "watermarkContent", required = false) String watermarkContent) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.inline().filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
+            return ResponseEntity.ok().headers(headers).body(byteArrayOutputStream.toByteArray());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("操作失败，请联系管理员。" + StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), StringUtils.LF));
+        }
     }
 
     @GetMapping("/down/{code}")
-    public void down(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
-                     @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
-                     @RequestParam(value = "watermarkContent", required = false) String watermarkContent, HttpServletResponse response) throws IOException {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=\""
-                + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".pdf" + "\"");
-        service.print(code, businessKey, response.getOutputStream(), enableWatermark, watermarkContent);
+    public ResponseEntity<?> down(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
+                                  @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
+                                  @RequestParam(value = "watermarkContent", required = false) String watermarkContent) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.attachment().filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
+            return ResponseEntity.ok().headers(headers).body(byteArrayOutputStream.toByteArray());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("操作失败，请联系管理员。" + StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), StringUtils.LF));
+        }
     }
 
     @GetMapping("/batch-down/{code}")
-    public void batchDown(@PathVariable String code, @RequestParam("businessKey") List<Object> businessKey, @RequestParam("title") String title,
-                          @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
-                          @RequestParam(value = "watermarkContent", required = false) String watermarkContent, HttpServletResponse response) throws IOException {
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\""
-                + new String(title.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".zip" + "\"");
-        service.batchPrint(code, businessKey, response.getOutputStream(), enableWatermark, watermarkContent);
+    public ResponseEntity<?> batchDown(@PathVariable String code, @RequestParam("businessKey") List<Object> businessKey, @RequestParam("title") String title,
+                                       @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
+                                       @RequestParam(value = "watermarkContent", required = false) String watermarkContent) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            service.batchPrint(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDisposition(ContentDisposition.attachment().filename(URLEncoder.encode(title, "UTF-8") + ".zip").build());
+            return ResponseEntity.ok().headers(headers).body(byteArrayOutputStream.toByteArray());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("操作失败，请联系管理员。" + StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), StringUtils.LF));
+        }
     }
 }

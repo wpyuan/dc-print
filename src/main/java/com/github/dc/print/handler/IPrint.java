@@ -41,7 +41,7 @@ public interface IPrint<T> {
     Map<String, Object> data(T businessKey);
 
     /**
-     * 打印时的异常处理
+     * 打印时的异常处理，最简单就往外抛出异常
      *
      * @param code 处理器标识
      * @param businessKey 业务主键
