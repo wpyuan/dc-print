@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * <p>
- *     默认打印实现
+ *     默认打印实现接口，接口请求路径可携带调用方系统代码systemCode
  * </p>
  *
  * @author wangpeiyuan
@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Controller
 @Slf4j
-@RequestMapping("/print")
+@RequestMapping({"/print", "/{systemCode}/print"})
 public class DefaultPrintController {
 
     @Autowired
