@@ -33,8 +33,17 @@ dc:
 | 批量下载 |`GET`| /print/batch-down/{code}?businessKey=&title| code：客制化打印处理器标识；businessKey：业务主键（可多个）；title：文件名称 |
 
 > 上述接口可选参数：
-> - `boolean` enableWatermark：是否启用水印
-> - `String`  watermarkContent： 水印内容
+> - 水印相关：
+>  - `boolean` enableWatermark：是否启用水印
+>  - `String`  watermarkContent： 水印内容
+> - 二维码相关：
+>  - `boolean` enableQrcode：是否启用二维码
+>  - `String`  qrcodeContent： 二维码内容
+>  - `boolean` isQrcodeLocationAllPage：是否所有页都添加二维码，默认否
+>  - `List<Interget>` qrcodeLocationPageNumbers：二维码所在页码
+>  - `Integer` qrcodeAbsoluteX：二维码所在页面X轴绝对坐标，默认右上角
+>  - `Integer` qrcodeAbsoluteY：二维码所在页面Y轴绝对坐标，默认右上角
+>  - ... 详情见`com.github.dc.print.pojo.QrcodeConfig`属性
 
 ## 使用说明
 ### 1、引入依赖
