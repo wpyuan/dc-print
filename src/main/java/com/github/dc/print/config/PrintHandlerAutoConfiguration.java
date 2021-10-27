@@ -3,7 +3,7 @@ package com.github.dc.print.config;
 import com.github.dc.print.annotation.PrintHandler;
 import com.github.dc.print.handler.IPrint;
 import com.github.dc.print.handler.PrintHandlerManager;
-import com.github.defaultcore.helper.ApplicationContextHelper;
+import com.github.dc.print.helper.ApplicationContextHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
