@@ -18,7 +18,7 @@ import java.util.Map;
  * @author PeiYuan
  */
 @Configuration
-@DependsOn("applicationContextHelper")
+@DependsOn("dcPrintApplicationContextHelper")
 public class PrintHandlerAutoConfiguration {
 
     @Bean
