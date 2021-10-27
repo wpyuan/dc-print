@@ -1,5 +1,6 @@
 package com.github.dc.print.controller;
 
+import com.github.dc.print.pojo.QrcodeConfig;
 import com.github.dc.print.service.IPrintService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,9 +39,9 @@ public class DefaultPrintController {
     @GetMapping("/inline/{code}")
     public ResponseEntity<?> inline(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
                                     @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
-                                    @RequestParam(value = "watermarkContent", required = false) String watermarkContent) {
+                                    @RequestParam(value = "watermarkContent", required = false) String watermarkContent, QrcodeConfig qrcodeConfig) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent);
+            service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent, qrcodeConfig);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.inline().filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
@@ -53,9 +54,9 @@ public class DefaultPrintController {
     @GetMapping("/down/{code}")
     public ResponseEntity<?> down(@PathVariable String code, @RequestParam("businessKey") Object businessKey, @RequestParam("title") String title,
                                   @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
-                                  @RequestParam(value = "watermarkContent", required = false) String watermarkContent) {
+                                  @RequestParam(value = "watermarkContent", required = false) String watermarkContent, QrcodeConfig qrcodeConfig) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent);
+            service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent, qrcodeConfig);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             headers.setContentDisposition(ContentDisposition.attachment().filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
@@ -68,9 +69,9 @@ public class DefaultPrintController {
     @GetMapping("/batch-down/{code}")
     public ResponseEntity<?> batchDown(@PathVariable String code, @RequestParam("businessKey") List<Object> businessKey, @RequestParam("title") String title,
                                        @RequestParam(value = "enableWatermark", required = false, defaultValue = "false") Boolean enableWatermark,
-                                       @RequestParam(value = "watermarkContent", required = false) String watermarkContent) {
+                                       @RequestParam(value = "watermarkContent", required = false) String watermarkContent, QrcodeConfig qrcodeConfig) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            service.batchPrint(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent);
+            service.batchPrint(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent, qrcodeConfig);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDisposition(ContentDisposition.attachment().filename(URLEncoder.encode(title, "UTF-8") + ".zip").build());
