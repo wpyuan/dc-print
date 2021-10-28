@@ -31,12 +31,8 @@ public class PrintConfig {
 
         freemarker.template.Configuration freemarkerCfg = new freemarker.template.Configuration(freemarker.template.Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         //freemarker的模板目录
-        try {
-            ClassPathResource classPathResource = new ClassPathResource(printProperties.getTemplateClassPath());
-            freemarkerCfg.setDirectoryForTemplateLoading(classPathResource.getFile());
-        } catch (IOException e) {
-            log.warn("模板目录加载失败，请检查！路径：".concat(printProperties.getTemplateClassPath()), e);
-        }
+        ClassPathResource classPathResource = new ClassPathResource(printProperties.getTemplateClassPath());
+        freemarkerCfg.setClassLoaderForTemplateLoading(classPathResource.getClassLoader(), printProperties.getTemplateClassPath());
         List<String> fonts = printProperties.getFontClassPath();
         fonts.addAll(Arrays.asList("fonts/simsun.ttc", "fonts/simsunb.ttf", "fonts/msyh.ttc"));
         BaseFont watermarkFont = null;
