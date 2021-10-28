@@ -1,4 +1,4 @@
-package com.github.dc.print.controller;
+package com.github.dc.print.api.v_2_1_x.controller;
 
 import com.github.dc.print.pojo.QrcodeConfig;
 import com.github.dc.print.service.IPrintService;
@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * <p>
- *     默认打印实现接口，接口请求路径可携带调用方系统代码systemCode
+ *     默认打印实现接口，接口请求路径可携带调用方系统代码systemCode（兼容低版本写法）
  * </p>
  *
  * @author wangpeiyuan
@@ -31,7 +31,7 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequestMapping({"/print", "/{systemCode}/print"})
-public class DefaultPrintController {
+public class DcPrintV1Controller {
 
     @Autowired
     private IPrintService service;
@@ -44,7 +44,7 @@ public class DefaultPrintController {
             service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent, qrcodeConfig);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(ContentDisposition.inline().filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
+            headers.setContentDisposition(ContentDisposition.builder("inline").filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
             return ResponseEntity.ok().headers(headers).body(byteArrayOutputStream.toByteArray());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("操作失败，请联系管理员。" + StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), StringUtils.LF));
@@ -59,7 +59,7 @@ public class DefaultPrintController {
             service.print(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent, qrcodeConfig);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(ContentDisposition.attachment().filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
+            headers.setContentDisposition(ContentDisposition.builder("attachment").filename(URLEncoder.encode(title, "UTF-8") + ".pdf").build());
             return ResponseEntity.ok().headers(headers).body(byteArrayOutputStream.toByteArray());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("操作失败，请联系管理员。" + StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), StringUtils.LF));
@@ -74,7 +74,7 @@ public class DefaultPrintController {
             service.batchPrint(code, businessKey, byteArrayOutputStream, enableWatermark, watermarkContent, qrcodeConfig);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDisposition(ContentDisposition.attachment().filename(URLEncoder.encode(title, "UTF-8") + ".zip").build());
+            headers.setContentDisposition(ContentDisposition.builder("attachment").filename(URLEncoder.encode(title, "UTF-8") + ".zip").build());
             return ResponseEntity.ok().headers(headers).body(byteArrayOutputStream.toByteArray());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("操作失败，请联系管理员。" + StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), StringUtils.LF));

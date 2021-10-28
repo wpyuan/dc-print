@@ -29,7 +29,7 @@ public class PrintConfig {
     @ConditionalOnMissingBean
     public PdfHelper pdfHelper(PrintProperties printProperties) {
 
-        freemarker.template.Configuration freemarkerCfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_30);
+        freemarker.template.Configuration freemarkerCfg = new freemarker.template.Configuration(freemarker.template.Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         //freemarker的模板目录
         try {
             ClassPathResource classPathResource = new ClassPathResource(printProperties.getTemplateClassPath());
