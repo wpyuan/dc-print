@@ -5,11 +5,9 @@ dc:
     templateClassPath: print/template
     # 模板的字符集。默认UTF-8
     encoding: UTF-8
-    # 模板可用字体路径。默认字体：宋体，微软雅黑，如以下字体。添加额外字体后，需要在模板对应使用
+    # 模板可用字体路径。默认字体：宋体.如以下字体。添加额外字体后，需要在模板对应使用
     fontClassPath:
       - fonts/simsun.ttc
-      - fonts/simsunb.ttf
-      - fonts/msyh.ttc
     # 水印
     watermark:
       # 水印字号，默认18号

@@ -34,7 +34,7 @@ public class PrintConfig {
         ClassPathResource classPathResource = new ClassPathResource(printProperties.getTemplateClassPath());
         freemarkerCfg.setClassLoaderForTemplateLoading(classPathResource.getClassLoader(), printProperties.getTemplateClassPath());
         List<String> fonts = printProperties.getFontClassPath();
-        fonts.addAll(Arrays.asList("fonts/simsun.ttc", "fonts/simsunb.ttf", "fonts/msyh.ttc"));
+        fonts.add("fonts/simsun.ttc");
         BaseFont watermarkFont = null;
         try {
             watermarkFont = BaseFont.createFont("fonts/simsun.ttc,0", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
