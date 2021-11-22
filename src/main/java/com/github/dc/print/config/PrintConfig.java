@@ -1,5 +1,6 @@
 package com.github.dc.print.config;
 
+import com.github.dc.print.helper.ExportExcelHelper;
 import com.github.dc.print.helper.PdfHelper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,5 +42,11 @@ public class PrintConfig {
             log.warn("水印字体加载失败，请检查！路径：fonts/simsun.ttc", e);
         }
         return new PdfHelper(freemarkerCfg, printProperties.getEncoding(), fonts, watermarkFont, printProperties.getWatermark().getFontSize(), printProperties.getWatermark().getOpacity());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ExportExcelHelper exportExcelHelper(PrintProperties printProperties) {
+        return new ExportExcelHelper(printProperties.getTemplateClassPath());
     }
 }
